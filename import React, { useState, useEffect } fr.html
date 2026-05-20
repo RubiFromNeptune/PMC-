@@ -1,0 +1,315 @@
+import React, { useState, useEffect } from 'react';
+
+export default function CyberpunkForumPortal() {
+
+  const demoUsers = [
+    { login: 'admin', password: 'arasaka2077', role: 'Administrator' },
+    { login: 'netrunner', password: 'blackwall', role: 'Netrunner' },
+    { login: 'merc', password: 'edgerunner', role: 'Mercenary' },
+  ];
+
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('cyberpunk_user');
+    if (saved) {
+      setUser(JSON.parse(saved));
+      setLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogin = () => {
+    const found = demoUsers.find(
+      (u) => u.login === login && u.password === password
+    );
+
+    if (found) {
+      setLoggedIn(true);
+      setUser(found);
+      localStorage.setItem('cyberpunk_user', JSON.stringify(found));
+      setError('');
+    } else {
+      setError('ACCESS DENIED // INVALID CREDENTIALS');
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('cyberpunk_user');
+    setLoggedIn(false);
+    setUser(null);
+  };
+
+  const forumPosts = [
+    {
+      title: 'Blackwall Activity Rising',
+      author: 'N0MAD',
+      text: 'Several unidentified signals were detected beyond the old Net barriers. Stay cautious when diving deep.',
+      tag: 'NET',
+    },
+    {
+      title: 'Night City Contracts',
+      author: 'Fixer_X',
+      text: 'New corpo extraction jobs available in Watson district. High payout, low survival chance.',
+      tag: 'MERC',
+    },
+    {
+      title: 'Cyberware Discussion',
+      author: 'ChromeSaint',
+      text: 'What are your favorite arm implants after patch 2.0? Looking for stability and stealth.',
+      tag: 'TECH',
+    },
+    {
+      title: 'Trauma Team Frequency Leak',
+      author: 'GhostSignal',
+      text: 'Encrypted radio packets intercepted near Corpo Plaza. Someone is planning something big.',
+      tag: 'SECURITY',
+    },
+  ];
+
+  if (!loggedIn) {
+    return (
+      <div className="min-h-screen bg-black text-cyan-300 flex items-center justify-center p-6 font-mono overflow-hidden relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,255,255,0.12),_transparent_50%)]"></div>
+
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="w-full h-full bg-[linear-gradient(to_bottom,transparent_95%,rgba(0,255,255,0.15)_100%)] bg-[length:100%_4px]"></div>
+        </div>
+
+        <div className="relative z-10 w-full max-w-md border border-cyan-400/40 bg-black/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(0,255,255,0.2)] p-8">
+          <div className="mb-8">
+            <p className="text-pink-500 text-sm tracking-[0.4em] mb-2">NIGHT CITY ACCESS NODE</p>
+            <h1 className="text-4xl font-bold text-cyan-300 uppercase tracking-wide">
+              CYBERFORUM
+            </h1>
+            <p className="text-cyan-500 mt-3 text-sm">
+              Secure underground network for mercs, netrunners and operators.
+            </p>
+          </div>
+
+          <div className="space-y-5">
+            <div>
+              <label className="block text-xs text-cyan-500 mb-2 tracking-widest">
+                LOGIN
+              </label>
+              <input
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+                className="w-full bg-black border border-cyan-500/40 rounded-xl px-4 py-3 outline-none focus:border-pink-500 text-cyan-200"
+                placeholder="Enter user ID"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs text-cyan-500 mb-2 tracking-widest">
+                PASSWORD
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-black border border-cyan-500/40 rounded-xl px-4 py-3 outline-none focus:border-pink-500 text-cyan-200"
+                placeholder="Enter passphrase"
+              />
+            </div>
+
+            {error && (
+              <div className="border border-red-500/50 bg-red-500/10 rounded-xl p-3 text-red-400 text-sm">
+                {error}
+              </div>
+            )}
+
+            <button
+              onClick={handleLogin}
+              className="w-full py-3 rounded-xl bg-cyan-400 text-black font-bold tracking-widest hover:scale-[1.02] transition-all duration-200 shadow-[0_0_25px_rgba(0,255,255,0.5)]"
+            >
+              CONNECT TO NETWORK
+            </button>
+          </div>
+
+          <div className="mt-8 border-t border-cyan-500/20 pt-5 text-xs text-cyan-600 space-y-1">
+            <p>Demo Access:</p>
+            <p>admin / arasaka2077</p>
+            <p>netrunner / blackwall</p>
+            <p>merc / edgerunner</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-cyan-200 font-mono overflow-hidden relative">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,0,128,0.12),_transparent_40%)]"></div>
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="w-full h-full bg-[linear-gradient(to_bottom,transparent_95%,rgba(0,255,255,0.12)_100%)] bg-[length:100%_4px]"></div>
+      </div>
+
+      <header className="relative z-10 border-b border-cyan-500/20 backdrop-blur-md bg-black/60">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+          <div>
+            <p className="text-pink-500 tracking-[0.4em] text-xs mb-1">UNDERGROUND FORUM SYSTEM</p>
+            <h1 className="text-3xl font-bold tracking-wide text-cyan-300 uppercase">
+              NIGHT CITY FORUM
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-cyan-300 font-bold">{user.login}</p>
+              <p className="text-xs text-cyan-600">{user.role}</p>
+            </div>
+
+            <button
+              onClick={logout}
+              className="border border-pink-500/50 text-pink-400 px-4 py-2 rounded-xl hover:bg-pink-500/10 transition"
+            >
+              Disconnect
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-8 grid lg:grid-cols-[280px_1fr] gap-6">
+        <aside className="space-y-6">
+          <div className="border border-cyan-500/20 rounded-3xl bg-black/60 backdrop-blur-xl p-5 shadow-[0_0_30px_rgba(0,255,255,0.1)]">
+            <h2 className="text-lg text-pink-400 mb-4 uppercase tracking-wider">
+              Network Channels
+            </h2>
+
+            <div className="space-y-3 text-sm">
+              {[
+                'Mercenary Contracts',
+                'Netrunner Logs',
+                'Cyberware Mods',
+                'Fixer Marketplace',
+                'Blackwall Incidents',
+                'Arasaka Leaks',
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="border border-cyan-500/10 rounded-xl px-4 py-3 hover:border-pink-500/50 hover:bg-pink-500/5 transition cursor-pointer"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="border border-pink-500/20 rounded-3xl bg-black/60 p-5">
+            <h2 className="text-lg text-cyan-300 mb-4 uppercase tracking-wider">
+              System Status
+            </h2>
+
+            <div className="space-y-3 text-sm text-cyan-500">
+              <div className="flex justify-between">
+                <span>City Grid</span>
+                <span className="text-green-400">ONLINE</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Blackwall</span>
+                <span className="text-yellow-400">UNSTABLE</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Net Traffic</span>
+                <span className="text-pink-400">HIGH</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Security</span>
+                <span className="text-cyan-300">ENCRYPTED</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section className="space-y-6">
+          <div className="border border-cyan-500/20 rounded-3xl bg-black/60 backdrop-blur-xl p-6 shadow-[0_0_40px_rgba(255,0,128,0.08)]">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-pink-500 text-xs tracking-[0.4em] mb-2">
+                  FORUM FEED
+                </p>
+                <h2 className="text-2xl font-bold uppercase text-cyan-300">
+                  Latest Threads
+                </h2>
+              </div>
+
+              <button className="bg-pink-500 text-black px-5 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-[0_0_25px_rgba(255,0,128,0.4)]">
+                New Thread
+              </button>
+            </div>
+
+            <div className="space-y-5">
+              {forumPosts.map((post) => (
+                <div
+                  key={post.title}
+                  className="border border-cyan-500/10 rounded-2xl p-5 hover:border-pink-500/40 hover:bg-pink-500/5 transition-all duration-200"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <h3 className="text-xl font-bold text-cyan-200">
+                        {post.title}
+                      </h3>
+                      <p className="text-sm text-cyan-600 mt-1">
+                        Posted by {post.author}
+                      </p>
+                    </div>
+
+                    <span className="border border-pink-500/30 text-pink-400 text-xs px-3 py-1 rounded-full tracking-widest">
+                      {post.tag}
+                    </span>
+                  </div>
+
+                  <p className="text-cyan-400 leading-relaxed">
+                    {post.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="border border-cyan-500/20 rounded-3xl bg-black/60 p-6">
+              <h3 className="text-xl text-pink-400 mb-4 uppercase">
+                Active Operators
+              </h3>
+
+              <div className="space-y-3 text-sm">
+                {['ZeroTrace', 'SilverPulse', 'GhostWire', 'HexRogue'].map((name) => (
+                  <div
+                    key={name}
+                    className="flex items-center justify-between border border-cyan-500/10 rounded-xl px-4 py-3"
+                  >
+                    <span>{name}</span>
+                    <span className="text-green-400">ONLINE</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border border-pink-500/20 rounded-3xl bg-black/60 p-6">
+              <h3 className="text-xl text-cyan-300 mb-4 uppercase">
+                Security Notice
+              </h3>
+
+              <div className="text-sm text-cyan-500 leading-relaxed space-y-4">
+                <p>
+                  Unauthorized data extraction attempts were detected near Corpo Plaza.
+                </p>
+                <p>
+                  All users are advised to rotate passphrases every 72 hours.
+                </p>
+                <p className="text-pink-400">
+                  WARNING: Rogue AI signatures detected beyond the Blackwall.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
